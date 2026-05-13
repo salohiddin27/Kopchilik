@@ -11,5 +11,4 @@ urlpatterns = [
     path('groups/', GroupListCreateView.as_view()),
     path('groups/<int:pk>/join/', JoinGroupView.as_view()),
     path('groups/my/', MyGroupsView.as_view()),
-
 ]
