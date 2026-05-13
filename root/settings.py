@@ -1,4 +1,5 @@
-
+import os
+import dj_database _url
 from pathlib import Path
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -63,14 +64,7 @@ WSGI_APPLICATION = 'root.wsgi.application'
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
 
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'kopchilik_db',
-        'USER': 'kopchilik_user',
-        'PASSWORD': '1',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    'default': dj_database_url.config(default=os.environ.get('DATABASE_URL', 'postgresql://kopchilik_user:1@localhost:5432/kopchilik_db'), conn_max_age=600) 
 }
 
 
