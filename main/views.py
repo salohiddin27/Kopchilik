@@ -39,7 +39,7 @@ def send_verification_email(email, code):
     send_mail(
         subject='Tasdiqlash kodi',
         message=f'Sizning tasdiqlash kodingiz: {code}\nKod 10 daqiqa amal qiladi.',
-        from_email='salohiddinnurbayev25@gmail.com',
+        from_email='salohiddinnurbayev27@gmail.com',
         recipient_list=[email],
         fail_silently=False # xato bolsa exception chiqaradi
     )
