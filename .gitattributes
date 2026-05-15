@@ -1,0 +1,3 @@
+# Statik fayllarni GitHub tillar statistikasidan olib tashlash
+staticfiles/**/* linguist-documentation=false
+staticfiles/**/* linguist-vendored
