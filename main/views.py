@@ -9,12 +9,13 @@ from rest_framework import generics
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
-from .models import UserProfile, Group, GroupMember
-from .serializers import GroupSerializer, GroupMemberSerializer
+from .models import UserProfile, Group, GroupMember, UserChalanges
+from .serializers import GroupSerializer, GroupMemberSerializer, UserProfileSerializer, UserChalangesSerializer
 from django.shortcuts import get_object_or_404
 from django.utils import timezone
 from rest_framework.permissions import IsAuthenticated
 from rest_framework_simplejwt.authentication import JWTAuthentication
+from rest_framework.viewsets import ModelViewSet
 
 
 # ✅ Takrorlangan kodni oldini olish uchun helper
@@ -231,10 +232,7 @@ class DashboardView(APIView):
                 status=404 )
 
 
-
-
-
-class GroupListCreateView(generics.ListCreateAPIView):
+class GroupListCreateView(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
 
@@ -263,7 +261,7 @@ class JoinGroupView(APIView):
         return Response({'message': 'Allaqachon azosiz'})
 
 
-class MyGroupsView(generics.ListAPIView):
+class MyGroupsView(ModelViewSet):
     authentication_classes = [JWTAuthentication] 
     serializer_class = GroupMemberSerializer
     permission_classes = [IsAuthenticated]
@@ -274,3 +272,17 @@ class MyGroupsView(generics.ListAPIView):
             'group__id', 'group__name', 'group__cover_image',
             'group__created_by__username'
         ).filter(user=self.request.user)
+    
+
+class UserProfileView(ModelViewSet):
+    serializer_class = UserProfileSerializer
+    permission_classes = [IsAuthenticated]
+    
+    def get_queryset(self):
+        return UserProfile.objects.select_related('user')
+    
+class UserChalangesListView(ModelViewSet):
+    serializer_class = UserChalangesSerializer
+     
+    def get_queryset(self):
+        return UserChalanges.objects.select_related('profile', 'profile__user')
