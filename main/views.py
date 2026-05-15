@@ -265,4 +265,16 @@ class UserProfileView(ModelViewSet):
 class UserChalangesListView(ModelViewSet):
     serializer_class = UserChalangesSerializer
     queryset = UserChalanges.objects.select_related('profile', 'profile__user').all()
-    #
+
+class JoinGroupView(APIView):
+    authentication_classes = [JWTAuthentication] 
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, pk):
+        group = get_object_or_404(Group.objects.only('id'), pk=pk)
+        member, created = GroupMember.objects.get_or_create(
+            group=group, user=request.user
+        )
+        if created:
+            return Response({'message': 'Guruhga qoshildingiz'})
+        return Response({'message': 'Allaqachon azosiz'})
