@@ -1,10 +1,14 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
 
 class UserProfile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='UserProfile')
     email = models.EmailField(unique=True)
     is_registered = models.BooleanField(default=False)
+    verification_code = models.CharField(max_length=6, blank=True)
+    code_attempts = models.IntegerField(default=0) 
+    code_created_at = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return self.user.username
@@ -23,7 +27,7 @@ class Group(models.Model):
 class GroupMember(models.Model):
     group = models.ForeignKey(Group, on_delete=models.CASCADE)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    joined_at = models.DateField(auto_now_add=True)
+    joined_at = models.DateTimeField(auto_now_add=True)
     progres = models.IntegerField(default=0)
     streak = models.IntegerField(default=0)
 

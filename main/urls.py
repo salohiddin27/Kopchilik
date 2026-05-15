@@ -1,14 +1,16 @@
 from django.urls import path
-from main import views
-from .views import (login_view, register_view, logout_view, dashboard_view,
-    GroupListCreateView, JoinGroupView, MyGroupsView)
+from .views import (
+    login_view, register_view, logout_view, verify_email_view,
+    DashboardView, GroupListCreateView, JoinGroupView, MyGroupsView
+)
 
 urlpatterns = [
     path('login/', login_view, name='login'),
     path('register/', register_view, name='register'),
     path('logout/', logout_view, name='logout'),
-    path('dashboard/', dashboard_view, name='dashboard'),
-    path('groups/', GroupListCreateView.as_view()),
-    path('groups/<int:pk>/join/', JoinGroupView.as_view()),
-    path('groups/my/', MyGroupsView.as_view()),
+    path('verify-email/', verify_email_view, name='verify-email'), 
+    path('dashboard/', DashboardView.as_view(), name='dashboard'),  
+    path('groups/', GroupListCreateView.as_view(), name='groups'),
+    path('groups/<int:pk>/join/', JoinGroupView.as_view(), name='join-group'),
+    path('groups/my/', MyGroupsView.as_view(), name='my-groups'),
 ]
