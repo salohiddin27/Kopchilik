@@ -233,33 +233,18 @@ class DashboardView(APIView):
                 status=404 )
 
 
+# views.py
+
 class GroupListCreateView(ModelViewSet):
     authentication_classes = [JWTAuthentication]
     permission_classes = [IsAuthenticated]
-
-    queryset = Group.objects.select_related('created_by').only(
-        'id', 'name', 'description', 'cover_image',
-        'daily_goal', 'created_at', 'created_by_id', 'created_by__username'
-    )
     serializer_class = GroupSerializer
-    permission_classes = [IsAuthenticated]
+
+    # ModelViewSet ichida queryset filterlarsiz yoki property ko'rinishida berilishi yaxshi
+    queryset = Group.objects.select_related('created_by').all()
 
     def perform_create(self, serializer):
         serializer.save(created_by=self.request.user)
-
-
-class JoinGroupView(APIView):
-    authentication_classes = [JWTAuthentication] 
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request, pk):
-        group = get_object_or_404(Group.objects.only('id'), pk=pk)
-        member, created = GroupMember.objects.get_or_create(
-            group=group, user=request.user
-        )
-        if created:
-            return Response({'message': 'Guruhga qoshildingiz'})
-        return Response({'message': 'Allaqachon azosiz'})
 
 
 class MyGroupsView(ModelViewSet):
@@ -268,22 +253,16 @@ class MyGroupsView(ModelViewSet):
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
-        return GroupMember.objects.select_related('group', 'group__created_by').only(
-            'id', 'joined_at', 'progres', 'streak', 
-            'group__id', 'group__name', 'group__cover_image',
-            'group__created_by__username'
-        ).filter(user=self.request.user)
+        return GroupMember.objects.select_related('group', 'group__created_by').filter(user=self.request.user)
     
 
 class UserProfileView(ModelViewSet):
     serializer_class = UserProfileSerializer
     permission_classes = [IsAuthenticated]
+    queryset = UserProfile.objects.select_related('user').all()
     
-    def get_queryset(self):
-        return UserProfile.objects.select_related('user')
-    
+
 class UserChalangesListView(ModelViewSet):
     serializer_class = UserChalangesSerializer
-     
-    def get_queryset(self):
-        return UserChalanges.objects.select_related('profile', 'profile__user')
+    queryset = UserChalanges.objects.select_related('profile', 'profile__user').all()
+    #
